@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Tag } from '@/components/Tag';
 import { Rate } from '@/components/Rate';
 import type { Recipe } from '@/@types/recipe';
+import { BlurImage } from '@/components/BlurImage';
 
 interface FoodItemProps {
   recipe: Recipe;
@@ -13,11 +14,10 @@ export const FoodItem = ({ recipe }: FoodItemProps) => {
       <div className="max-w-sm h-full bg-white border-gray-200 !rounded-2xl shadow-lg border-0 overflow-hidden cursor-pointer dark:bg-gray-800 dark:border-gray-700">
         <Link to={`/detail-recipe/${recipe.id}`}>
           <div className="relative">
-            <img
-              className="rounded-t-lg h-70 w-full object-cover "
+            <BlurImage
+              className="rounded-t-lg h-70 w-full"
               src={recipe.image_url ?? ''}
               alt={recipe.name ?? ''}
-              loading="eager"
             />
             <div className="absolute top-3 right-3">
               <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center space-x-1">

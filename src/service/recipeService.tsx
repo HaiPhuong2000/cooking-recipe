@@ -7,9 +7,12 @@ import type {
 import supabase from '@/supabase-client';
 
 class RecipeServiceError extends Error {
-  constructor(message: string, public originalError?: any) {
+  public originalError?: any;
+
+  constructor(message: string, originalError?: any) {
     super(message);
     this.name = 'RecipeServiceError';
+    this.originalError = originalError;
   }
 }
 

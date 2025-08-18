@@ -1,7 +1,7 @@
 import { useRecipes } from '@/hook/useRecipe';
 import { FoodItem } from './FoodItem';
 import { Skeleton } from '@/components/Skeleton';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 export const FoodList = () => {

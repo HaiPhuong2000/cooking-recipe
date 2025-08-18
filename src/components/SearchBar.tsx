@@ -7,7 +7,6 @@ export const SearchBar = () => {
     availableCountries,
     selectedCountry,
     updateSelectedCountry,
-    loading,
     performSearch,
   } = useRecipes();
 

@@ -33,12 +33,6 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     loadCountries();
   }, []);
 
-  // Bỏ auto search khi có thay đổi
-  // useEffect(() => {
-  //   performSearch();
-  // }, [searchTerm, selectedCountry, currentPage, sortBy]);
-
-  // Chỉ auto search khi thay đổi trang hoặc sắp xếp
   useEffect(() => {
     performSearch();
   }, [currentPage, sortBy]);
@@ -66,8 +60,7 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
         const result = await searchRecipes({
           searchTerm:
             options?.searchTerm !== undefined ? options.searchTerm : searchTerm,
-          selectedCountry:
-            options?.country !== undefined ? options.country : selectedCountry,
+          selectedCountry: options?.country || selectedCountry,
           page: currentPage,
           limit: 10,
           sortBy,

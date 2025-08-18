@@ -6,7 +6,7 @@ export interface Recipe {
   cooking_time: number;
   country: string;
   rating: number;
-  difficulty_level: 'easy' | 'medium' | 'hard';
+  difficulty_level?: 'easy' | 'medium' | 'difficult';
   ingredients?: string[];
   instructions?: string[];
   servings?: number;
