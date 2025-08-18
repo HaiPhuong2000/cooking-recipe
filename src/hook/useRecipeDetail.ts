@@ -24,7 +24,6 @@ export const useRecipeDetail = (
 
     setLoading(true);
     setError(null);
-    console.log(recipeId);
     try {
       const recipeData = await getRecipeById(recipeId);
       setRecipe(recipeData);

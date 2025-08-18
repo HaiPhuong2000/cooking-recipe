@@ -55,7 +55,7 @@ export const FoodItem = ({ recipe }: FoodItemProps) => {
                   d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                 />
               </svg>
-              <span className="text-gray-700">25 phút</span>
+              <span className="text-gray-700">{recipe.cooking_time} phút</span>
             </div>
           </div>
           <Link to={`/detail-recipe/${recipe.id}`}>

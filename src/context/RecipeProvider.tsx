@@ -1,4 +1,4 @@
-import type { Recipe, SortOption } from '@/@types/recipe';
+import type { Recipe } from '@/@types/recipe';
 import {
   getRandomCountries,
   getRecipeById,
@@ -7,13 +7,31 @@ import {
 import type { ReactNode } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { RecipeContext, type RecipeContextType } from './recipeContext';
+import type {
+  SORT_OPTIONS,
+  DIFFICULTY_LEVELS,
+  RATING_FILTERS,
+  COOKING_TIME_FILTERS,
+} from '@/utils/constants';
+
+const createEventEmitter = () => {
+  const listeners = new Set<() => void>();
+  return {
+    emit: () => listeners.forEach((listener) => listener()),
+    subscribe: (listener: () => void) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+  };
+};
+
+const resetEvent = createEventEmitter();
 
 interface RecipeProviderProps {
   children: ReactNode;
 }
 
 export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
-  // States
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,10 +43,9 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [sortBy, setSortBy] = useState<keyof typeof SORT_OPTIONS>('newest');
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
-  // Load countries khi khởi động
   useEffect(() => {
     loadCountries();
   }, []);
@@ -37,7 +54,6 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     performSearch();
   }, [currentPage, sortBy]);
 
-  // Load countries
   const loadCountries = async (): Promise<void> => {
     try {
       const countries = await getRandomCountries(4);
@@ -47,11 +63,14 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     }
   };
 
-  // Perform search
   const performSearch = useCallback(
     async (options?: {
       country?: string;
       searchTerm?: string;
+      difficulty_level?: keyof typeof DIFFICULTY_LEVELS;
+      rating?: keyof typeof RATING_FILTERS;
+      cooking_time?: keyof typeof COOKING_TIME_FILTERS;
+      sort?: keyof typeof SORT_OPTIONS;
     }): Promise<void> => {
       setLoading(true);
       setError(null);
@@ -59,27 +78,23 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
       try {
         const result = await searchRecipes({
           searchTerm:
-            options?.searchTerm !== undefined ? options.searchTerm : searchTerm,
+            options?.searchTerm !== undefined
+              ? options.searchTerm.trim()
+              : searchTerm,
           selectedCountry: options?.country || selectedCountry,
+          difficulty_level: options?.difficulty_level || 'all',
+          rating: options?.rating || 'all',
+          cooking_time: options?.cooking_time || 'all',
+          sort: options?.sort || sortBy,
           page: currentPage,
           limit: 10,
-          sortBy,
         });
 
-        // Trong hàm performSearch, thêm log để debug
-        console.log('API response:', {
-          data: result.data.length,
-          totalCount: result.totalCount,
-          totalPages: result.totalPages,
-          currentPage,
-        });
-
-        // Đảm bảo rằng tất cả các trạng thái được cập nhật đúng
         setRecipes((prevRecipes) => {
-          const newRecipes =
-            currentPage === 1 ? result.data : [...prevRecipes, ...result.data];
-          console.log('Updated recipes:', newRecipes.length);
-          return newRecipes;
+          if (currentPage === 1 || options) {
+            return result.data;
+          }
+          return [...prevRecipes, ...result.data];
         });
 
         setTotalPages(result.totalPages);
@@ -98,7 +113,6 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     [currentPage, sortBy, searchTerm, selectedCountry]
   );
 
-  // Load recipe detail
   const loadRecipeDetail = async (recipeId: string): Promise<void> => {
     setLoading(true);
     setError(null);
@@ -116,21 +130,18 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     }
   };
 
-  // Actions (chỉ update state)
   const updateSearchTerm = (term: string): void => {
     setSearchTerm(term);
-    // Không tự động reset trang khi thay đổi searchTerm
     setCurrentPage(1);
   };
 
   const updateSelectedCountry = (country: string): void => {
     setSelectedCountry(country);
     setCurrentPage(1);
-    // Gọi performSearch với country mới
     performSearch({ country });
   };
 
-  const updateSortBy = (sort: SortOption): void => {
+  const updateSortBy = (sort: keyof typeof SORT_OPTIONS): void => {
     setSortBy(sort);
     setCurrentPage(1);
   };
@@ -145,17 +156,26 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     setError(null);
   };
 
-  const resetSearch = (): void => {
+  const resetSearch = useCallback((): void => {
     setSearchTerm('');
     setSelectedCountry('Tất cả');
     setSortBy('newest');
     setCurrentPage(1);
-    performSearch();
-  };
+    setRecipes([]);
 
-  // Context value
+    resetEvent.emit();
+
+    performSearch({
+      searchTerm: '',
+      country: 'Tất cả',
+      difficulty_level: 'all',
+      rating: 'all',
+      cooking_time: 'all',
+      sort: 'newest',
+    });
+  }, []);
+
   const value: RecipeContextType = {
-    // States
     recipes,
     loading,
     error,
@@ -168,7 +188,6 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     sortBy,
     selectedRecipe,
 
-    // Actions
     updateSearchTerm,
     updateSelectedCountry,
     updateSortBy,
@@ -177,6 +196,7 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     clearError,
     performSearch,
     resetSearch,
+    resetEvent,
   };
 
   return (

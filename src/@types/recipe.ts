@@ -1,17 +1,22 @@
+import type {
+  DIFFICULTY_LEVELS,
+  RATING_FILTERS,
+  COOKING_TIME_FILTERS,
+  SORT_OPTIONS,
+} from '@/utils/constants';
+
 export interface Recipe {
   id: string;
   name: string;
   description: string;
-  image_url?: string;
+  image_url: string;
   cooking_time: number;
   country: string;
   rating: number;
-  difficulty_level?: 'easy' | 'medium' | 'difficult';
   ingredients?: string[];
   instructions?: string[];
-  servings?: number;
+  difficulty_level?: keyof typeof DIFFICULTY_LEVELS;
   created_at?: string;
-  updated_at?: string;
 }
 
 export interface RecipeSearchResult {
@@ -23,9 +28,10 @@ export interface RecipeSearchResult {
 export interface SearchFilters {
   searchTerm?: string;
   selectedCountry?: string;
+  difficulty_level?: keyof typeof DIFFICULTY_LEVELS;
+  rating?: keyof typeof RATING_FILTERS;
+  cooking_time?: keyof typeof COOKING_TIME_FILTERS;
+  sort?: keyof typeof SORT_OPTIONS;
   page?: number;
   limit?: number;
-  sortBy?: SortOption;
 }
-
-export type SortOption = 'newest' | 'highest_rated' | 'easiest' | 'fastest';

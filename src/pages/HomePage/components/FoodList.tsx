@@ -3,32 +3,78 @@ import { FoodItem } from './FoodItem';
 import { Skeleton } from '@/components/Skeleton';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import {
+  DIFFICULTY_LEVELS,
+  RATING_FILTERS,
+  COOKING_TIME_FILTERS,
+  SORT_OPTIONS,
+} from '@/utils/constants';
+import { Select } from '@/components/Select';
+
+type FilterType = {
+  difficulty_level: keyof typeof DIFFICULTY_LEVELS;
+  rating: keyof typeof RATING_FILTERS;
+  cooking_time: keyof typeof COOKING_TIME_FILTERS;
+  sort: keyof typeof SORT_OPTIONS;
+};
+
+const DEFAULT_FILTERS: FilterType = {
+  difficulty_level: 'all',
+  rating: 'all',
+  cooking_time: 'all',
+  sort: 'newest',
+};
 
 export const FoodList = () => {
-  const { recipes, loading, totalCount, currentPage, goToPage } = useRecipes();
+  const {
+    recipes,
+    loading,
+    totalCount,
+    currentPage,
+    goToPage,
+    performSearch,
+    searchTerm,
+    selectedCountry,
+    resetEvent,
+  } = useRecipes();
+
+  const [filters, setFilters] = useState<FilterType>(DEFAULT_FILTERS);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = resetEvent.subscribe(() => {
+      setFilters(DEFAULT_FILTERS);
+      setIsFirstLoad(true);
+    });
+
+    return () => unsubscribe();
+  }, [resetEvent]);
+
   const { ref, inView } = useInView({
-    /* Optional options */
     threshold: 0.1,
     triggerOnce: false,
-    // Chỉ bắt đầu quan sát sau khi component đã render
     initialInView: false,
-    // Đảm bảo phần tử phải hiển thị ít nhất 100px trước khi kích hoạt
     rootMargin: '100px',
   });
-  // if (recipes.length === 0) {
-  //   return (
-  //     <EmptyState
-  //       message={
-  //         searchTerm
-  //           ? `Không tìm thấy món ăn nào với từ khóa "${searchTerm}"`
-  //           : "Chưa có món ăn nào"
-  //       }
-  //     />
-  //   );
-  // }
+
+  const handleFilterChange = (filterType: keyof FilterType, value: string) => {
+    const newFilters = {
+      ...filters,
+      [filterType]: value as FilterType[keyof FilterType],
+    };
+    setFilters(newFilters);
+    setIsFirstLoad(true);
+    goToPage(1);
+
+    performSearch({
+      searchTerm,
+      country: selectedCountry,
+      ...newFilters,
+    });
+  };
+
   useEffect(() => {
     if (initialLoad) {
       setInitialLoad(false);
@@ -36,14 +82,7 @@ export const FoodList = () => {
     }
 
     if (inView && !loading && recipes.length < totalCount) {
-      console.log(
-        'Loading more data, current page:',
-        currentPage,
-        'total recipes:',
-        recipes.length,
-        'total count:',
-        totalCount
-      );
+      setIsLoadingMore(true);
       goToPage(currentPage + 1);
     }
   }, [
@@ -76,17 +115,74 @@ export const FoodList = () => {
       </div>
     );
   }
+
   return (
     <section className="max-w-7xl mx-auto px-6 py-12">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-bold text-gray-900">Tất cả công thức</h2>
         <span className="text-gray-900">{totalCount} công thức</span>
       </div>
+
+      <div className="mb-8">
+        <div className="flex flex-wrap gap-4">
+          <Select
+            id="difficulty_level"
+            value={filters.difficulty_level}
+            onChange={(e) =>
+              handleFilterChange('difficulty_level', e.target.value)
+            }
+          >
+            {Object.entries(DIFFICULTY_LEVELS).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            id="rating"
+            value={filters.rating}
+            onChange={(e) => handleFilterChange('rating', e.target.value)}
+          >
+            {Object.entries(RATING_FILTERS).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            id="cooking_time"
+            value={filters.cooking_time}
+            onChange={(e) => handleFilterChange('cooking_time', e.target.value)}
+          >
+            {Object.entries(COOKING_TIME_FILTERS).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            id="sort"
+            value={filters.sort}
+            onChange={(e) => handleFilterChange('sort', e.target.value)}
+          >
+            {Object.entries(SORT_OPTIONS).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value}
+              </option>
+            ))}
+          </Select>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {recipes.map((recipe) => (
           <FoodItem key={recipe.id} recipe={recipe} />
         ))}
       </div>
+
       {recipes.length < totalCount && (
         <div ref={ref} className="py-8 flex justify-center">
           {isLoadingMore && (

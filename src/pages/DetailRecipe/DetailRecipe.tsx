@@ -7,7 +7,6 @@ import { Skeleton } from '@/components/Skeleton';
 export const DetailRecipe = () => {
   const { id } = useParams();
   const { recipe, loading } = useRecipeDetail(id);
-  console.log(recipe);
   if (loading) {
     return <Skeleton />;
   }

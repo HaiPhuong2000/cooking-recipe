@@ -1,10 +1,23 @@
 import bannerImage from '@/assets/img/banner.webp';
+import { useState, useEffect } from 'react';
+
 export const Banner = () => {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = bannerImage;
+    img.onload = () => setIsImageLoaded(true);
+  }, []);
+
   return (
     <div>
-      <section className="relative h-96 bg-gradient-to-r from-blue-600 to-purple-600 overflow-hidden">
+      <section className="relative h-96  overflow-hidden">
+        {/* Ảnh banner với hiệu ứng blur khi đang tải */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ${
+            isImageLoaded ? '' : 'blur-xl scale-110'
+          }`}
           style={{ backgroundImage: `url(${bannerImage})` }}
         >
           <div className="absolute inset-0 bg-black opacity-40"></div>

@@ -10,7 +10,7 @@ interface RecipeProps {
 export const RecipeDetail = ({ recipe }: RecipeProps) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-      <div className="flex items-center space-x-8 mb-6">
+      <div className="flex flex-wrap items-center space-x-8 mb-6">
         <div className="flex items-center space-x-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"

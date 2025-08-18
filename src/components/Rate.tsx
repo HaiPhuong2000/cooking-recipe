@@ -3,9 +3,6 @@ interface RateProps {
 }
 
 export const Rate = ({ rating }: RateProps) => {
-  // const [rating, setRating] = useState(4.7);
-
-  // Tính toán số sao đầy đủ và nửa sao
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating - fullStars >= 0.5;
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
@@ -33,10 +30,8 @@ export const Rate = ({ rating }: RateProps) => {
         </svg>
       ))}
 
-      {/* Nửa sao */}
       {hasHalfStar && (
         <div className="relative">
-          {/* Nửa sao màu xám */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -46,7 +41,6 @@ export const Rate = ({ rating }: RateProps) => {
           >
             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
           </svg>
-          {/* Nửa sao màu vàng đè lên */}
           <div className="absolute inset-0 overflow-hidden w-1/2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +55,6 @@ export const Rate = ({ rating }: RateProps) => {
         </div>
       )}
 
-      {/* Sao trống */}
       {[...Array(emptyStars)].map((_, i) => (
         <svg
           key={`empty-${i}`}

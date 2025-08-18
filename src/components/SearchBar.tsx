@@ -1,5 +1,6 @@
 import { useRecipes } from '@/hook/useRecipe';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const SearchBar = () => {
   const {
@@ -8,17 +9,33 @@ export const SearchBar = () => {
     selectedCountry,
     updateSelectedCountry,
     performSearch,
+    searchTerm,
   } = useRecipes();
 
-  const [searchRecipe, setSearchRecipe] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchRecipe, setSearchRecipe] = useState(searchTerm);
 
-  // Xóa useEffect để không tự động search khi nhập
+  useEffect(() => {
+    setSearchRecipe(searchTerm);
+  }, [searchTerm]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Sử dụng giá trị searchRecipe trực tiếp thay vì dựa vào searchTerm từ context
-    performSearch({ searchTerm: searchRecipe });
     updateSearchTerm(searchRecipe);
+    performSearch({ searchTerm: searchRecipe });
+
+    if (location.pathname !== '/') {
+      navigate('/');
+    }
+  };
+
+  const handleCountrySelect = (country: string) => {
+    updateSelectedCountry(country);
+
+    if (location.pathname !== '/') {
+      navigate('/');
+    }
   };
 
   return (
@@ -85,12 +102,12 @@ export const SearchBar = () => {
           <button
             key={country}
             type="button"
-            onClick={() => updateSelectedCountry(country)}
+            onClick={() => handleCountrySelect(country)}
             className={`${
               selectedCountry === country
                 ? 'bg-blue-600 text-white hover:bg-blue-500'
-                : 'bg-white text-black '
-            } cursor-pointer border border-blue-600 rounded-xl text-base font-medium px-3 py-1.5 text-center me-3 dark:border-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:bg-gray-900 dark:focus:ring-blue-800`}
+                : 'bg-white text-black hover:text-blue-400'
+            } cursor-pointer border border-none rounded-xl text-base font-medium px-3 py-1.5 text-center me-3 dark:border-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:bg-gray-900 dark:focus:ring-blue-800`}
           >
             {country}
           </button>
