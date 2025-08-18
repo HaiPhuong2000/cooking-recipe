@@ -1,6 +1,6 @@
 export const Skeleton = () => {
   return (
-    <div className="max-w-sm h-full bg-white border-gray-200 !rounded-2xl shadow-lg border-0 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+    <div className="max-w-sm h-full bg-white border-gray-200 !rounded-2xl shadow-lg border-0 overflow-hidden ">
       <div className="relative">
         <div className="h-70 w-full bg-gray-200 animate-pulse rounded-t-lg"></div>
         <div className="absolute top-3 right-3">

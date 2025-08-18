@@ -11,7 +11,7 @@ interface FoodItemProps {
 export const FoodItem = ({ recipe }: FoodItemProps) => {
   return (
     <div>
-      <div className="max-w-sm h-full bg-white border-gray-200 !rounded-2xl shadow-lg border-0 overflow-hidden cursor-pointer dark:bg-gray-800 dark:border-gray-700">
+      <div className="max-w-sm h-full bg-white border-gray-200 !rounded-2xl shadow-lg border-0 overflow-hidden cursor-pointer ">
         <Link to={`/detail-recipe/${recipe.id}`}>
           <div className="relative">
             <BlurImage
@@ -59,11 +59,11 @@ export const FoodItem = ({ recipe }: FoodItemProps) => {
             </div>
           </div>
           <Link to={`/detail-recipe/${recipe.id}`}>
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">
               {recipe.name}
             </h5>
           </Link>
-          <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+          <p className="mb-3 font-normal text-gray-700 ">
             {recipe.description}
           </p>
           <div className="flex justify-between">
