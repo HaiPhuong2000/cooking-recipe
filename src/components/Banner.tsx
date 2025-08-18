@@ -13,7 +13,6 @@ export const Banner = () => {
   return (
     <div>
       <section className="relative h-96  overflow-hidden">
-        {/* Ảnh banner với hiệu ứng blur khi đang tải */}
         <div
           className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ${
             isImageLoaded ? '' : 'blur-xl scale-110'

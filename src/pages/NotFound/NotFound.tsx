@@ -4,7 +4,6 @@ export const NotFound = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-4">
       <div className="max-w-lg w-full bg-white rounded-2xl shadow-lg p-8 text-center">
-        {/* 404 Icon */}
         <div className="mb-8 text-blue-600">
           <svg
             className="w-24 h-24 mx-auto"
