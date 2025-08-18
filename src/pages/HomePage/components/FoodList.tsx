@@ -180,9 +180,18 @@ export const FoodList = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {recipes.map((recipe) => (
-          <FoodItem key={recipe.id} recipe={recipe} />
-        ))}
+        {recipes.length === 0 && !loading ? (
+          <div className="text-center py-16 col-span-full">
+            <h3 className="text-2xl font-semibold text-gray-600 mb-2">
+              Không tìm thấy công thức
+            </h3>
+            <p className="text-gray-500 mb-6">
+              Hãy thử tìm kiếm công thức khác hoặc điều chỉnh lại bộ lọc của bạn
+            </p>
+          </div>
+        ) : (
+          recipes.map((recipe) => <FoodItem key={recipe.id} recipe={recipe} />)
+        )}
       </div>
 
       {recipes.length < totalCount && (
