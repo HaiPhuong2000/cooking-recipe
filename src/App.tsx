@@ -4,13 +4,11 @@ import { RecipeProvider } from './context/RecipeProvider';
 
 function App() {
   return (
-    <div>
-      <RecipeProvider>
-        <MainLayout>
-          <Outlet />
-        </MainLayout>
-      </RecipeProvider>
-    </div>
+    <RecipeProvider>
+      <MainLayout>
+        <Outlet />
+      </MainLayout>
+    </RecipeProvider>
   );
 }
 
