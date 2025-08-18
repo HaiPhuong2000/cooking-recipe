@@ -4,7 +4,7 @@ export const Banner = () => {
       <section className="relative h-96 bg-gradient-to-r from-blue-600 to-purple-600 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url(/src/assets/img/banner.webp)' }}
+          style={{ backgroundImage: 'url(./src/assets/img/banner.webp)' }}
         >
           <div className="absolute inset-0 bg-black opacity-40"></div>
           <div className="relative max-w-7xl mx-auto px-6 py-20 text-white">
