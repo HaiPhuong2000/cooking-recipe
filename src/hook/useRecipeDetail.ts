@@ -9,19 +9,12 @@ interface UseRecipeDetailReturn {
   refetch: () => Promise<void>;
 }
 
-export const useRecipeDetail = (
-  recipeId: string | undefined
-): UseRecipeDetailReturn => {
+export const useRecipeDetail = (recipeId: string): UseRecipeDetailReturn => {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const loadRecipe = async (): Promise<void> => {
-    if (!recipeId) {
-      setRecipe(null);
-      return;
-    }
-
     setLoading(true);
     setError(null);
     try {

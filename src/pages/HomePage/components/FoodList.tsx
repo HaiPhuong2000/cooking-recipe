@@ -41,12 +41,10 @@ export const FoodList = () => {
   const [filters, setFilters] = useState<FilterType>(DEFAULT_FILTERS);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   useEffect(() => {
     const unsubscribe = resetEvent.subscribe(() => {
       setFilters(DEFAULT_FILTERS);
-      setIsFirstLoad(true);
     });
 
     return () => unsubscribe();
@@ -65,7 +63,6 @@ export const FoodList = () => {
       [filterType]: value as FilterType[keyof FilterType],
     };
     setFilters(newFilters);
-    setIsFirstLoad(true);
     goToPage(1);
 
     performSearch({
@@ -98,15 +95,20 @@ export const FoodList = () => {
   useEffect(() => {
     if (!loading) {
       setIsLoadingMore(false);
-      if (recipes.length > 0) {
-        setIsFirstLoad(false);
-      }
     }
   }, [loading, recipes.length]);
 
-  if (loading && isFirstLoad) {
+  if (loading) {
     return (
-      <div className='className="max-w-7xl mx-auto px-6 py-12"'>
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="py-12">
+          <div className="h-9 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+          <div className="flex gap-4">
+            <div className="h-5 w-48 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+            <div className="h-5 w-48 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+            <div className="h-5 w-48 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Skeleton />
           <Skeleton />
