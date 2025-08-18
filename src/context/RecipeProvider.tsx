@@ -76,12 +76,14 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
       setError(null);
 
       try {
+        const countryToUse =
+          options?.country !== undefined ? options.country : selectedCountry;
         const result = await searchRecipes({
           searchTerm:
             options?.searchTerm !== undefined
               ? options.searchTerm.trim()
               : searchTerm,
-          selectedCountry: options?.country || selectedCountry,
+          selectedCountry: countryToUse,
           difficulty_level: options?.difficulty_level || 'all',
           rating: options?.rating || 'all',
           cooking_time: options?.cooking_time || 'all',
@@ -138,7 +140,15 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
   const updateSelectedCountry = (country: string): void => {
     setSelectedCountry(country);
     setCurrentPage(1);
-    performSearch({ country });
+    setRecipes([]);
+    performSearch({
+      country,
+      searchTerm: searchTerm,
+      difficulty_level: 'all',
+      rating: 'all',
+      cooking_time: 'all',
+      sort: sortBy,
+    });
   };
 
   const updateSortBy = (sort: keyof typeof SORT_OPTIONS): void => {

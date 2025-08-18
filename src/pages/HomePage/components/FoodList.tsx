@@ -41,7 +41,7 @@ export const FoodList = () => {
   const [filters, setFilters] = useState<FilterType>(DEFAULT_FILTERS);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
-
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
   useEffect(() => {
     const unsubscribe = resetEvent.subscribe(() => {
       setFilters(DEFAULT_FILTERS);
@@ -95,10 +95,13 @@ export const FoodList = () => {
   useEffect(() => {
     if (!loading) {
       setIsLoadingMore(false);
+      if (recipes.length > 0) {
+        setIsFirstLoad(false);
+      }
     }
   }, [loading, recipes.length]);
 
-  if (loading) {
+  if (loading && isFirstLoad) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="py-12">
